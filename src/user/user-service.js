@@ -46,7 +46,7 @@ const UserService = {
       const [languageId] = await trx
         .into('language')
         .insert([
-          { name: 'French', user_id },
+          { name: 'Spanish', user_id },
         ], ['id'])
 
       // when inserting words,
@@ -58,35 +58,37 @@ const UserService = {
         .first()
 
       const languageWords = [
-        ['entraine toi', 'practice', 2],
-        ['bonjour', 'hello', 3],
-        ['maison', 'house', 4],
-        ['développeur', 'developer', 5],
-        ['traduire', 'translate', 6],
-        ['incroyable', 'amazing', 7],
-        ['chien', 'dog', 8],
-        ['chat', 'cat', null],
+        ['Hola', 'hello', 2],
+        ['Perra/Perro', 'dog', 3],
+        ['Gata/Gato', 'cat', 4],
+        ['Comida', 'food', 5],
+        ['Buena/Bueno', 'good', 6],
+        ['Mala/Malo', 'bad', 7],
+        ['Si', 'yes', 8],
+        ['No', 'no', 9],
+        ['Dia', 'day', 10],
+        ['Noche', 'night', null],
       ]
 
-      const [languageHeadId] = await trx
-        .into('word')
-        .insert(
-          languageWords.map(([original, translation, nextInc]) => ({
-            language_id: languageId.id,
-            original,
-            translation,
-            next: nextInc
-              ? Number(seq.last_value) + nextInc
-              : null
-          })),
-          ['id']
-        )
+const [languageHeadId] = await trx
+  .into('word')
+  .insert(
+    languageWords.map(([original, translation, nextInc]) => ({
+      language_id: languageId.id,
+      original,
+      translation,
+      next: nextInc
+        ? Number(seq.last_value) + nextInc
+        : null
+    })),
+    ['id']
+  )
 
-      await trx('language')
-        .where('id', languageId.id)
-        .update({
-          head: languageHeadId.id,
-        })
+await trx('language')
+  .where('id', languageId.id)
+  .update({
+    head: languageHeadId.id,
+  })
     })
   },
 }
